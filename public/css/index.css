@@ -1,6 +1,9 @@
 #value {
-	display: none;
-	text-align: center;
-	background: black;
-	color: white
+	text-align:	center;
+	background:	black;
+	color:		white
+}
+
+.hidden {
+	display:	none;
 }

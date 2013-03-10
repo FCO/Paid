@@ -1,4 +1,6 @@
-function Money(dom, touch) {
+function Money(dom, touch, defaults) {
+	for(var attr in defaults)
+		this[attr] = defaults[attr];
 	this.dom = dom;
 	dom.obj = this;
 	dom.type = "tel";
@@ -8,16 +10,26 @@ function Money(dom, touch) {
 	if(touch || touch !== null)
 		this.registerTouchEvents();
 	dom.onkeydown = function(event) {
-		if(event.keyCode == 39) return this.obj.increment(+5);
-		if(event.keyCode == 37) return this.obj.increment(-5);
-		if(event.keyCode == 40) return this.obj.increment(-100);
-		if(event.keyCode == 38) return this.obj.increment(+100);
+		switch(event.keyCode) {
+			case 39:
+				this.obj.increment(+5);
+				break;
+			case 37:
+				this.obj.increment(-5);
+				break;
+			case 40:
+				this.obj.increment(-100);
+				break;
+			case 38:
+				this.obj.increment(+100);
+				break;
+		}
 	};
 }
 
 Money.list = [];
 
-Money.use = function() {
+Money.use = function(touch, defaults) {
 	var inputs = document.querySelectorAll("input[type=money]");
 	if(inputs) {
 		for(var i = 0; i < inputs.length; i++) {
@@ -64,29 +76,38 @@ Money.prototype = {
 			event.preventDefault();
 			event.stopPropagation();
 			this.obj.swiping	= true;
-			this.obj.startPosition	= event.pageY;
-			this.obj.lastPosition	= event.pageY;
+			this.obj.startPositionX	= event.pageX;
+			this.obj.lastPositionX	= event.pageX;
+			this.obj.startPositionY	= event.pageY;
+			this.obj.lastPositionY	= event.pageY;
 			this.obj.origValue   	= this.obj.getValue();
 		}, false);
 		this.dom.addEventListener('touchmove', function(event) {
 			event.preventDefault();
 			event.stopPropagation();
 			if(this.obj.swiping) {
-				var distance = this.obj.lastPosition - event.pageY;
-				distance *= distance < 0 ? -1 : 1;
-				if(distance >= this.obj.interval) {
-					var totalDistance = this.obj.startPosition - event.pageY;
-					this.obj.setValue(this.obj.origValue + (parseInt(totalDistance / 10) * 5));
-					this.obj.lastPosition = event.pageY;
-				}
+				var totalDistanceX = event.pageX - this.obj.startPositionX;
+				var totalDistanceY = this.obj.startPositionY - event.pageY;
+
+				var value = this.obj.origValue;
+
+				value += parseInt(totalDistanceX / 10) * 5;
+				value += parseInt(totalDistanceY / 10) * 100;
+
+				this.obj.setValue(value);
+
+				this.obj.lastPositionX = event.pageX;
+				this.obj.lastPositionY = event.pageY;
 			}
 		},false);
 		this.dom.addEventListener('touchend', function(event) {
 			event.preventDefault();
 			event.stopPropagation();
 			this.obj.swiping	= false;
-			this.obj.startPosition	= null;
-			this.obj.lastPosition	= null;
+			this.obj.startPositionX	= null;
+			this.obj.lastPositionX	= null;
+			this.obj.startPositionY	= null;
+			this.obj.lastPositionY	= null;
 		},false);
 	}
 };

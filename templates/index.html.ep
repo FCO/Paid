@@ -1,26 +1,44 @@
 % layout 'default';
 % title 'Welcome';
 <link rel="stylesheet" type="text/css" href="css/index.css"></style>
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script src="js/Money.js"></script>
+<script src="js/Touch.js"></script>
 <script>
-	$(function() {
+	function clickLink(link) {
+	    if (document.createEvent) {
+	        var event = document.createEvent("MouseEvents");
+	        event.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	        link.dispatchEvent(event);
+	    }
+	    else if (link.fireEvent) {
+	       link.fireEvent("onclick");
+	    }
+	}
+
+	window.onload = function() {
 		Money.use();
-		$(document).click(function(){
+		document.addEventListener('click', function(event){
 			event.preventDefault();
-			var input = $("#value");
-			input.toggle("slow");
-			input.focus();
+			var input = document.querySelector("#value");
+			input.classList.toggle("hidden");
+			input.querySelector("input").focus();
 		});
-		document.addEventListener('touchend', function(event) {
-			$("#value").click();
+		new Touch(document);
+		document.ontap = function(){clickLink(document);};
+		document.querySelector("form#value").addEventListener('click', function(event) {
+			event.stopPropagation();
 		});
-	});
+		document.querySelector("form#value").addEventListener('touchend', function(event) {
+			event.stopPropagation();
+		});
+	};
 </script>
 <br>
 <br>
 <br>
-<form>
-	<input type="money" id="value" value="0" size="7"> 
-</form>
-
+<div>
+	<form id="value" class="hidden">
+		<input type="money" value="0" size="7"> 
+		<input type="submit" value="ok">
+	</form>
+</div>
