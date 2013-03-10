@@ -22,8 +22,14 @@
 			input.classList.toggle("hidden");
 			input.querySelector("input").focus();
 		});
+		document.addEventListener('touchstart', function(event) {
+			window.click = true;
+		});
+		document.addEventListener('touchmove', function(event) {
+			window.click = false;
+		});
 		document.addEventListener('touchend', function(event) {
-			clickLink(document);
+			if(window.click) clickLink(document);
 		});
 		document.querySelector("form#value").addEventListener('click', function(event) {
 			event.stopPropagation();
