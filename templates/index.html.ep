@@ -21,6 +21,6 @@
 <br>
 <br>
 <form>
-	<input type="money" id="value" value="0,00" size="7"> 
+	<input type="money" id="value" value="0" size="7"> 
 </form>
 

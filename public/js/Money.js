@@ -7,9 +7,11 @@ function Money(dom, touch) {
 	this.setValue(this.getValue());
 	if(touch || touch !== null)
 		this.registerTouchEvents();
-	dom.onkeypress = function(event) {
-		if(event.keyCode == 38) return this.increment();
-		if(event.keyCode == 40) return this.increment();
+	dom.onkeydown = function(event) {
+		if(event.keyCode == 39) return this.obj.increment(+5);
+		if(event.keyCode == 37) return this.obj.increment(-5);
+		if(event.keyCode == 40) return this.obj.increment(-100);
+		if(event.keyCode == 38) return this.obj.increment(+100);
 	};
 }
 
@@ -26,11 +28,12 @@ Money.use = function() {
 };
 
 Money.prototype = {
+	prefix:			"R$",
 	fractionalDivisor:	",",
 	interval:		5,
 
 	toInt:		function(val) {
-		return parseInt(val.replace(/\D+/, ""));
+		return parseInt(val.replace(/\D+/g, ""));
 	},
 	toString:	function(val) {
 		val = "" + val;
@@ -38,7 +41,7 @@ Money.prototype = {
 		for(var i = 0; i < zeros; i++) {
 			val = "0" + val;
 		}
-		return val.replace(/\d{1,2}$/, function(data){return "," + data});
+		return this.prefix + val.replace(/\d{1,2}$/, function(data){return "," + data});
 	},
 	getValue:	function(val) {
 		return this.toInt(this.dom.value);
@@ -52,12 +55,8 @@ Money.prototype = {
 		this.setValue(this.getValue());
 	},
 
-	increment:	function() {
-		this.setValue(this.obj.getValue() + 5);
-	},
-
-	decrement:	function() {
-		this.setValue(this.obj.getValue() - 5);
+	increment:	function(value) {
+		this.setValue(this.getValue() + value);
 	},
 
 	registerTouchEvents:	function() {
