@@ -88,10 +88,14 @@ Money.prototype = {
 			if(this.obj.swiping) {
 				var totalDistanceX = event.pageX - this.obj.startPositionX;
 				var totalDistanceY = this.obj.startPositionY - event.pageY;
-				if(Math.abs(totalDistanceX) > Math.abs(totalDistanceY))
-					this.obj.setValue(this.obj.origValue + (parseInt(totalDistanceX / 10) * 100));
-				else
-					this.obj.setValue(this.obj.origValue + (parseInt(totalDistanceY / 10) * 5));
+
+				var value = this.obj.origValue;
+
+				value += parseInt(totalDistanceX / 10) * 5;
+				value += parseInt(totalDistanceY / 10) * 100;
+
+				this.obj.setValue(value);
+
 				this.obj.lastPositionX = event.pageX;
 				this.obj.lastPositionY = event.pageY;
 			}
