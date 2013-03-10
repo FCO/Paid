@@ -17,13 +17,13 @@
 
 	window.onload = function() {
 		Money.use();
-		new Touch(document);
 		document.addEventListener('click', function(event){
 			event.preventDefault();
 			var input = document.querySelector("#value");
 			input.classList.toggle("hidden");
 			input.querySelector("input").focus();
 		});
+		new Touch(document);
 		document.ontap = function(){clickLink(document);};
 		document.querySelector("form#value").addEventListener('click', function(event) {
 			event.stopPropagation();
