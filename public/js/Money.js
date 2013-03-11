@@ -87,7 +87,7 @@ Money.prototype = {
 			event.stopPropagation();
 			if(this.obj.swiping) {
 				var totalDistanceX = event.pageX - this.obj.startPositionX;
-				var totalDistanceY = this.obj.startPositionY - event.pageY;
+				var totalDistanceY = event.pageY - this.obj.startPositionY;
 
 				var value = this.obj.origValue;
 
